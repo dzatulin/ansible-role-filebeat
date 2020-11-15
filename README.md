@@ -1,4 +1,4 @@
-#Ansible Role: Filebeat 
+## Ansible Role: Filebeat 
 Role for installing and configuring Filebeat on the Elastic Stack
 ## Requirements
 Ansible version: 2.9

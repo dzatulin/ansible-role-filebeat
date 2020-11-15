@@ -1,0 +1,78 @@
+---
+- name: Copy Filebeat configuration.
+  template:
+    src: filebeat.yml.j2
+    dest: "/etc/filebeat/filebeat.yml"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart filebeat
+
+- name: Copy System plugin.
+  template:
+    src: system.yml.j2
+    dest: "/etc/filebeat/modules.d/system.yml"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart filebeat
+
+- name: Copy Redis plugin.
+  template:
+    src: redis.yml.j2
+    dest: "/etc/filebeat/modules.d/redis.yml"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart filebeat
+  when: filebeat_redis_plugin | default(false)
+
+- name: Copy Nginx plugin.
+  template:
+    src: nginx.yml.j2
+    dest: "/etc/filebeat/modules.d/nginx.yml"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart filebeat
+  when: filebeat_nginx_plugin | default(false)
+
+- name: сreate log directory
+  file:
+    path: /var/log/filebeat
+    mode: 0700
+    owner: root
+    group: root
+    state: directory
+  notify: restart filebeat
+  when: filebeat_enable_logging | default(false)
+
+- name: сreate log file
+  file:
+    path: /var/log/filebeat/filebeat.log
+    owner: root
+    group: root
+    mode: '0600'
+    state: touch
+  notify: restart filebeat
+  when: filebeat_enable_logging | default(false)
+
+- name: Ensure Filebeat SSL key pair directory exists.
+  file:
+    path: "{{ filebeat_ssl_dir }}"
+    state: directory
+    mode: 0755
+  when: filebeat_ssl_key_file | default(false)
+
+- name: Copy SSL key and cert for filebeat.
+  copy:
+    src: "{{ item }}"
+    dest: "{{ filebeat_ssl_dir }}/{{ item | basename }}"
+    mode: 0644
+  with_items:
+    - "{{ filebeat_ssl_key_file }}"
+    - "{{ filebeat_ssl_certificate_file }}"
+  notify: restart filebeat
+  when:
+    - filebeat_ssl_key_file | default(false)
+    - filebeat_ssl_certificate_file | default(false)

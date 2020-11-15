@@ -6,6 +6,7 @@ Centos 7/ Debian
 ## Dependencies
 None
 ## Example Playbook
+```
 - hosts:  "{{ var }}"
   vars:
     filebeat_output_elasticsearch_enabled: true
@@ -15,3 +16,4 @@ None
     filebeat_password: "1234567890"
   roles:
     - ansible-role-filebeat
+```

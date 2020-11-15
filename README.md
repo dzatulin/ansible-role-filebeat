@@ -1,5 +1,5 @@
 #Ansible Role: Filebeat 
-Role for installing, removing and updating packages
+Role for installing and configuring Filebeat on the Elastic Stack
 ## Requirements
 Ansible version: 2.9
 Centos 7/ Debian
@@ -17,3 +17,4 @@ None
   roles:
     - ansible-role-filebeat
 ```
+
